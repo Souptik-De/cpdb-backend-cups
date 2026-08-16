@@ -257,6 +257,7 @@ int create_subscription ()
     {
         logwarn("Error subscribing to CUPS notifications: %s\n",
                 cupsLastErrorString ());
+        ippDelete(resp);
         return (0);
     }
 
@@ -2740,6 +2741,7 @@ char *get_option_translation(PrinterCUPS *p,
     {
         /* request failed */
         logerror("Request failed: %s\n", cupsLastErrorString());
+        ippDelete(response);
         return g_strdup(option_name);
     }
 
@@ -2757,6 +2759,7 @@ char *get_option_translation(PrinterCUPS *p,
     copy = g_strdup(translation);
     cupsArrayDelete(opts_catalog);
     cupsArrayDelete(printer_opts_catalog);
+    ippDelete(response);
     return copy;
 }
 
@@ -2786,6 +2789,7 @@ char *get_choice_translation(PrinterCUPS *p,
     {
         /* request failed */
         logerror("Request failed: %s\n", cupsLastErrorString());
+        ippDelete(response);
         return g_strdup(choice_name);
     }
 
@@ -2803,6 +2807,7 @@ char *get_choice_translation(PrinterCUPS *p,
     copy = g_strdup(translation);
     cupsArrayDelete(opts_catalog);
     cupsArrayDelete(printer_opts_catalog);
+    ippDelete(response);
     return copy;
 }
 
@@ -2861,6 +2866,7 @@ GVariant *get_printer_translations(PrinterCUPS *p, const char *locale)
         g_free(name_key);
     }
     translations = g_variant_builder_end(builder);
+    g_variant_builder_unref(builder);
     free_options(num_opts, opts);
 
     return translations;
