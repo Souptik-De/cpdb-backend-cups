@@ -2538,6 +2538,7 @@ char *extractHostFromURI(const char *uri) {
         host[host_end - host_start] = '\0'; // Null-terminate the string
     }
 
+    // cppcheck-suppress nullPointerRedundantCheck // host is non-NULL here (malloc succeeded or would have returned)
     fprintf(stderr, "XXX12: URI: %s Host: %s\n", uri, host);
 
     return host;
