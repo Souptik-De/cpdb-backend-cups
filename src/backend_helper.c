@@ -257,6 +257,7 @@ int create_subscription ()
     {
         logwarn("Error subscribing to CUPS notifications: %s\n",
                 cupsLastErrorString ());
+        ippDelete(resp);
         return (0);
     }
 
@@ -898,15 +899,14 @@ int get_all_options(PrinterCUPS *p, Option **options)
     int sz = sizeof(additional_options) / sizeof(char *);
 
     /** Add additional attributes to current option_names list **/
-    char **tmp_option_names = realloc(option_names, sizeof(char *) * (num_options+sz));
-    if (tmp_option_names == NULL)
-    {
+    char **tmp_names = realloc(option_names, sizeof(char *) * (num_options+sz)); 
+    if (!tmp_names) {
+        for (int k = 0; k < num_options; k++) g_free(option_names[k]);
         free(option_names);
-        *options = NULL;
-        return 0;
+        return NULL;
     }
-    option_names = tmp_option_names;
-    for (int i=0; i<sz; i++)
+    option_names = tmp_names;
+    for (int i=0; i<sz; i++) 
         option_names[num_options+i] = g_strdup(additional_options[i]);
     num_options += sz;
 
@@ -1318,14 +1318,13 @@ int get_all_capabilities(PrinterCUPS *p, Capability **caps,
 
     char *additional_options[] = {"media-source", "media-type"};
     int sz = sizeof(additional_options) / sizeof(char *);
-    char **tmp_option_names = realloc(option_names, sizeof(char *) * (num_options + sz));
-    if (tmp_option_names == NULL)
-    {
+    char **tmp_names = realloc(option_names, sizeof(char *) * (num_options + sz));
+    if (!tmp_names) {
+        for (int k = 0; k < num_options; k++) g_free(option_names[k]);
         free(option_names);
-        *caps = NULL;
-        return 0;
+        return NULL;
     }
-    option_names = tmp_option_names;
+    option_names = tmp_names;
     for (int i = 0; i < sz; i++)
         option_names[num_options + i] = g_strdup(additional_options[i]);
     num_options += sz;
@@ -1871,12 +1870,8 @@ const char *get_printer_state(PrinterCUPS *p)
     if ((attr = ippFindAttribute(response, "printer-state",
                                  IPP_TAG_ENUM)) != NULL)
     {
-        int state = ippGetInteger(attr, 0);
-        logdebug("printer-state=%d\n", state);
-        if (state >= 0 && state < 6)
-            str = map->state[state];
-        else
-            str = "NA";
+        logdebug("printer-state=%d\n", ippGetInteger(attr, 0));
+        str = map->state[ippGetInteger(attr, 0)];
     }
     return str;
 }
@@ -2319,8 +2314,6 @@ void free_Dialog(Dialog *d)
 Mappings *get_new_Mappings()
 {
     Mappings *m = (Mappings *)(malloc(sizeof(Mappings)));
-    for (int i = 0; i < 6; i ++)
-        m->state[i] = "NA";
     m->state[3] = CPDB_STATE_IDLE;
     m->state[4] = CPDB_STATE_PRINTING;
     m->state[5] = CPDB_STATE_STOPPED;
@@ -2339,10 +2332,7 @@ const char *cups_printer_state(cups_dest_t *dest)
                                       dest->options);
     if (state == NULL)
         return "NA";
-    int idx = state[0] - '0';
-    if (idx < 0 || idx >= 6)
-        return "NA";
-    return map->state[idx];
+    return map->state[state[0] - '0'];
 }
 
 gboolean cups_is_accepting_jobs(cups_dest_t *dest)
@@ -2762,6 +2752,7 @@ char *get_option_translation(PrinterCUPS *p,
     {
         /* request failed */
         logerror("Request failed: %s\n", cupsLastErrorString());
+        ippDelete(response);
         return g_strdup(option_name);
     }
 
@@ -2779,6 +2770,7 @@ char *get_option_translation(PrinterCUPS *p,
     copy = g_strdup(translation);
     cupsArrayDelete(opts_catalog);
     cupsArrayDelete(printer_opts_catalog);
+    ippDelete(response);
     return copy;
 }
 
@@ -2808,6 +2800,7 @@ char *get_choice_translation(PrinterCUPS *p,
     {
         /* request failed */
         logerror("Request failed: %s\n", cupsLastErrorString());
+        ippDelete(response);
         return g_strdup(choice_name);
     }
 
@@ -2825,6 +2818,7 @@ char *get_choice_translation(PrinterCUPS *p,
     copy = g_strdup(translation);
     cupsArrayDelete(opts_catalog);
     cupsArrayDelete(printer_opts_catalog);
+    ippDelete(response);
     return copy;
 }
 
@@ -2883,6 +2877,7 @@ GVariant *get_printer_translations(PrinterCUPS *p, const char *locale)
         g_free(name_key);
     }
     translations = g_variant_builder_end(builder);
+    g_variant_builder_unref(builder);
     free_options(num_opts, opts);
 
     return translations;
