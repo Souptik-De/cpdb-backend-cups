@@ -936,7 +936,10 @@ int get_all_options(PrinterCUPS *p, Option **options)
             (strcmp(option_names[i], "position") == 0) ||
             (strcmp(option_names[i], "print-scaling") == 0)
         )
+        {
+            g_free(option_names[i]);
             continue;
+        }
 
         opts[optsIndex].option_name = option_names[i];
         vals = cupsFindDestSupported(CUPS_HTTP_DEFAULT, p->dest, p->dinfo, option_names[i]);
@@ -976,6 +979,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -989,6 +993,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1008,6 +1013,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup("none,none");
     }
     optsIndex++;
@@ -1021,6 +1027,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1034,6 +1041,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1051,6 +1059,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1070,6 +1079,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1085,20 +1095,36 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     else
     {
         if (strcmp(opts[optsIndex].default_value, "potrait") == 0)
+        {
+            g_free(opts[optsIndex].default_value);
             opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
+        }
         else if (strcmp(opts[optsIndex].default_value, "landscape") == 0)
+        {
+            g_free(opts[optsIndex].default_value);
             opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[1]);
+        }
         else if (strcmp(opts[optsIndex].default_value, "reverse-landscape") == 0)
+        {
+            g_free(opts[optsIndex].default_value);
             opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[2]);
+        }
         else if (strcmp(opts[optsIndex].default_value, "reverse-potrait") == 0)
+        {
+            g_free(opts[optsIndex].default_value);
             opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[3]);
+        }
         else
+        {
+            g_free(opts[optsIndex].default_value);
             opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
+        }
     }
     optsIndex++;
 
@@ -1114,6 +1140,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1127,6 +1154,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1141,6 +1169,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1161,6 +1190,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1177,6 +1207,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup(opts[optsIndex].supported_values[0]);
     }
     optsIndex++;
@@ -1188,6 +1219,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     opts[optsIndex].default_value = get_default(p, opts[optsIndex].option_name);
     if (strcmp(opts[optsIndex].default_value, "NA") == 0)
     {
+        g_free(opts[optsIndex].default_value);
         opts[optsIndex].default_value = g_strdup("");
     }
     optsIndex++;
@@ -1243,6 +1275,7 @@ int get_all_options(PrinterCUPS *p, Option **options)
     }
 
     *options = (Option *) realloc(opts, sizeof(Option) * optsIndex);
+    g_free(option_names);
     return optsIndex;
 }
 
